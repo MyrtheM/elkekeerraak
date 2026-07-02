@@ -38,6 +38,51 @@
         ::-webkit-scrollbar-track { background: var(--bg); }
         ::-webkit-scrollbar-thumb { background: var(--gold); border-radius: 3px; }
 
+        .topbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 100;
+            background: rgba(12, 11, 15, 0.85);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border-bottom: 1px solid var(--border);
+            padding: 0.6rem 1.5rem;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 2rem;
+            font-size: 0.65rem;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+        }
+
+        .topbar-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: var(--text-dim);
+        }
+
+        .topbar-value {
+            font-family: 'JetBrains Mono', monospace;
+            color: var(--gold);
+            font-size: 0.7rem;
+        }
+
+        .topbar-weather {
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+            color: var(--text-dim);
+        }
+
+        @media (max-width: 600px) {
+            .topbar { gap: 1rem; padding: 0.5rem 1rem; font-size: 0.6rem; }
+            .topbar-value { font-size: 0.6rem; }
+        }
+
         .hero {
             min-height: 100vh;
             display: flex;
@@ -389,6 +434,17 @@
 </head>
 <body>
 
+    <!-- TOP BAR: Countdown + Weather -->
+    <div class="topbar">
+        <div class="topbar-item">
+            <span>Nog</span>
+            <span class="topbar-value" id="countdown">--d --u --m</span>
+        </div>
+        <div class="topbar-weather">
+            <span id="weather">Utrecht 10 jul</span>
+        </div>
+    </div>
+
     <section class="hero">
         <div class="hero-bg"></div>
         <div class="hero-content">
@@ -536,27 +592,59 @@
 
     <img class="img-full" src="https://images.unsplash.com/photo-1743151028424-81d5ee09fedf?w=1400&auto=format&fit=crop&q=80" alt="Utrecht bij nacht">
 
-    <div class="container">
-        <section class="section reveal">
-            <p class="eyebrow">Checklist</p>
-            <h2 class="heading-lg">Wat je nodig hebt</h2>
-            <ul class="checklist">
-                <li>Outfit: casual chic</li>
-                <li>Comfortabele schoenen in je tas</li>
-                <li>Pinpas voor drankjes na het diner</li>
-                <li>Telefoon opgeladen</li>
-                <li>Jas of vestje voor tussendoor</li>
-                <li>ID-bewijs</li>
-            </ul>
-        </section>
-    </div>
-
     <footer class="footer">
         <p class="footer-title">Elke Keer Raak</p>
         <p class="footer-sub">Utrecht Oost &middot; 10 Juli 2026 &middot; Goeie Louisa &middot; Karel V</p>
     </footer>
 
     <script>
+        // Countdown to July 10, 2026 at 19:30 CET
+        const dinnerDate = new Date('2026-07-10T19:30:00+02:00');
+
+        function updateCountdown() {
+            const now = new Date();
+            const diff = dinnerDate - now;
+
+            if (diff <= 0) {
+                document.getElementById('countdown').textContent = 'Het is zover!';
+                return;
+            }
+
+            const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+            const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const mins = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+
+            document.getElementById('countdown').textContent = days + 'd ' + hours + 'u ' + mins + 'm';
+        }
+
+        updateCountdown();
+        setInterval(updateCountdown, 60000);
+
+        // Weather from Open-Meteo (free, no API key)
+        fetch('https://api.open-meteo.com/v1/forecast?latitude=52.09&longitude=5.12&hourly=temperature_2m,weathercode&timezone=Europe/Amsterdam&start_date=2026-07-10&end_date=2026-07-10')
+            .then(r => r.json())
+            .then(data => {
+                const hours = data.hourly.time;
+                const temps = data.hourly.temperature_2m;
+                const codes = data.hourly.weathercode;
+
+                // Get evening temp (20:00) and night temp (01:00 approx = index 1 next day, use 23:00)
+                const eveningIdx = hours.findIndex(h => h.includes('T20:'));
+                const nightIdx = hours.findIndex(h => h.includes('T23:'));
+
+                const eveningTemp = eveningIdx >= 0 ? Math.round(temps[eveningIdx]) : '--';
+                const nightTemp = nightIdx >= 0 ? Math.round(temps[nightIdx]) : '--';
+                const code = eveningIdx >= 0 ? codes[eveningIdx] : 0;
+
+                const weatherIcon = code <= 1 ? '\u2600\ufe0f' : code <= 3 ? '\u26c5' : code <= 50 ? '\u2601\ufe0f' : '\ud83c\udf27\ufe0f';
+
+                document.getElementById('weather').textContent = weatherIcon + ' ' + eveningTemp + '\u00b0 avond \u00b7 ' + nightTemp + '\u00b0 nacht';
+            })
+            .catch(() => {
+                document.getElementById('weather').textContent = '\u2600\ufe0f Utrecht';
+            });
+
+        // Scroll reveal
         const reveals = document.querySelectorAll('.reveal');
         const observer = new IntersectionObserver((entries) => {
             entries.forEach(entry => {
