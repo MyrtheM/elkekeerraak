@@ -1,0 +1,591 @@
+﻿<!DOCTYPE html>
+<html lang="nl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Elke Keer Raak — Utrecht</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400;1,700&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        :root {
+            --bg: #0c0b0f;
+            --bg-card: #141318;
+            --bg-surface: #1a191f;
+            --gold: #c8a855;
+            --gold-soft: #d4b96a;
+            --cream: #f5f0e8;
+            --text: #e8e4dd;
+            --text-muted: #8a8680;
+            --text-dim: #5a5754;
+            --border: rgba(200, 168, 85, 0.12);
+            --radius: 3px;
+        }
+
+        html { scroll-behavior: smooth; }
+
+        body {
+            font-family: 'Inter', -apple-system, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.6;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        ::-webkit-scrollbar { width: 5px; }
+        ::-webkit-scrollbar-track { background: var(--bg); }
+        ::-webkit-scrollbar-thumb { background: var(--gold); border-radius: 3px; }
+
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero-bg {
+            position: absolute;
+            inset: 0;
+            background: url('https://images.unsplash.com/photo-1750930890065-f82f77193a3a?w=1600&auto=format&fit=crop&q=80') center/cover no-repeat;
+            filter: brightness(0.35);
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 2;
+            text-align: center;
+            padding: 2rem;
+        }
+
+        .hero-eyebrow {
+            font-size: 0.7rem;
+            letter-spacing: 5px;
+            text-transform: uppercase;
+            color: var(--gold);
+            margin-bottom: 2rem;
+            font-weight: 500;
+        }
+
+        .hero-title {
+            font-family: 'Playfair Display', serif;
+            font-size: clamp(3.5rem, 14vw, 9rem);
+            font-weight: 900;
+            line-height: 0.95;
+            color: var(--cream);
+            margin-bottom: 1.5rem;
+            letter-spacing: -2px;
+        }
+
+        .hero-meta {
+            font-size: 0.8rem;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            color: var(--text-muted);
+            margin-bottom: 2.5rem;
+        }
+
+        .hero-date {
+            display: inline-block;
+            border: 1px solid var(--gold);
+            padding: 0.7rem 2rem;
+            font-size: 0.75rem;
+            letter-spacing: 4px;
+            text-transform: uppercase;
+            color: var(--gold);
+            font-weight: 600;
+        }
+
+        .hero-scroll {
+            position: absolute;
+            bottom: 2.5rem;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 0.65rem;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            color: var(--text-dim);
+            writing-mode: vertical-rl;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 0 1.5rem;
+        }
+
+        .section { padding: 6rem 0; }
+        .section-sm { padding: 4rem 0; }
+
+        .img-full {
+            width: 100%;
+            height: 55vh;
+            min-height: 300px;
+            object-fit: cover;
+            display: block;
+        }
+
+        @media (max-width: 600px) {
+            .img-full { height: 40vh; min-height: 220px; }
+        }
+
+        .eyebrow {
+            font-size: 0.65rem;
+            letter-spacing: 4px;
+            text-transform: uppercase;
+            color: var(--gold);
+            font-weight: 600;
+            margin-bottom: 1rem;
+        }
+
+        .heading-xl {
+            font-family: 'Playfair Display', serif;
+            font-size: clamp(2.2rem, 6vw, 4rem);
+            font-weight: 700;
+            line-height: 1.1;
+            color: var(--cream);
+            margin-bottom: 1.5rem;
+        }
+
+        .heading-lg {
+            font-family: 'Playfair Display', serif;
+            font-size: clamp(1.6rem, 4vw, 2.5rem);
+            font-weight: 700;
+            line-height: 1.2;
+            color: var(--cream);
+            margin-bottom: 1rem;
+        }
+
+        .body-text {
+            color: var(--text-muted);
+            font-size: 0.95rem;
+            line-height: 1.8;
+            font-weight: 300;
+            max-width: 600px;
+        }
+
+        .event {
+            border-top: 1px solid var(--border);
+            padding: 3rem 0;
+        }
+
+        .event-header {
+            display: flex;
+            align-items: baseline;
+            gap: 1.5rem;
+            margin-bottom: 0.5rem;
+            flex-wrap: wrap;
+        }
+
+        .event-time {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.8rem;
+            color: var(--gold);
+            letter-spacing: 1px;
+        }
+
+        .event-tag {
+            font-size: 0.6rem;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            color: var(--text-dim);
+            background: var(--bg-surface);
+            padding: 0.3rem 0.8rem;
+            border-radius: var(--radius);
+        }
+
+        .event-title {
+            font-family: 'Playfair Display', serif;
+            font-size: clamp(1.4rem, 3.5vw, 2rem);
+            font-weight: 700;
+            color: var(--cream);
+            margin: 0.8rem 0 0.5rem;
+        }
+
+        .event-subtitle {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            margin-bottom: 1rem;
+        }
+
+        .event-body {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            line-height: 1.7;
+            font-weight: 300;
+            max-width: 560px;
+        }
+
+        .event-images {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 3px;
+            margin-top: 1.5rem;
+            border-radius: var(--radius);
+            overflow: hidden;
+        }
+
+        .event-images img {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+        }
+
+        .event-images.single { grid-template-columns: 1fr; }
+        .event-images.single img { height: 280px; }
+
+        @media (max-width: 600px) {
+            .event-images img { height: 150px; }
+            .event-images.single img { height: 200px; }
+        }
+
+        .event-details {
+            margin-top: 1.5rem;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem 1.5rem;
+        }
+
+        .event-detail {
+            font-size: 0.75rem;
+            color: var(--text-dim);
+        }
+
+        .event-link {
+            display: inline-block;
+            margin-top: 1.2rem;
+            font-size: 0.7rem;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            color: var(--gold);
+            text-decoration: none;
+            border-bottom: 1px solid var(--gold);
+            padding-bottom: 2px;
+            font-weight: 500;
+            transition: opacity 0.2s;
+        }
+
+        .event-link:hover { opacity: 0.7; }
+
+        .bar-grid {
+            display: grid;
+            gap: 1px;
+            background: var(--border);
+            border: 1px solid var(--border);
+            margin-top: 2rem;
+        }
+
+        .bar-item {
+            background: var(--bg-card);
+            padding: 1.5rem;
+            display: grid;
+            grid-template-columns: 1fr auto;
+            align-items: start;
+            gap: 1rem;
+        }
+
+        .bar-name {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: var(--cream);
+            margin-bottom: 0.3rem;
+        }
+
+        .bar-desc {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            font-weight: 300;
+            line-height: 1.5;
+        }
+
+        .bar-meta {
+            font-size: 0.65rem;
+            color: var(--text-dim);
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            text-align: right;
+            white-space: nowrap;
+        }
+
+        .checklist {
+            list-style: none;
+            margin-top: 1.5rem;
+        }
+
+        .checklist li {
+            padding: 0.9rem 0;
+            border-bottom: 1px solid var(--border);
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            font-weight: 300;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .checklist li::before {
+            content: '\2014';
+            color: var(--gold);
+            font-weight: 600;
+        }
+
+        .moodboard {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 3px;
+            margin: 3rem 0;
+        }
+
+        .moodboard img {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            filter: brightness(0.8) saturate(0.9);
+            transition: filter 0.3s;
+        }
+
+        .moodboard img:hover { filter: brightness(1) saturate(1); }
+
+        @media (max-width: 600px) {
+            .moodboard { grid-template-columns: repeat(2, 1fr); }
+            .moodboard img { height: 150px; }
+        }
+
+        .footer {
+            border-top: 1px solid var(--border);
+            padding: 4rem 0 3rem;
+            text-align: center;
+        }
+
+        .footer-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.5rem;
+            color: var(--cream);
+            margin-bottom: 0.5rem;
+        }
+
+        .footer-sub {
+            font-size: 0.7rem;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            color: var(--text-dim);
+        }
+
+        .reveal {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity 0.7s ease, transform 0.7s ease;
+        }
+
+        .reveal.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    </style>
+</head>
+<body>
+
+    <section class="hero">
+        <div class="hero-bg"></div>
+        <div class="hero-content">
+            <p class="hero-eyebrow">De meiden van Utrecht Oost</p>
+            <h1 class="hero-title">Elke Keer<br>Raak</h1>
+            <p class="hero-meta">Utrecht &middot; Diner &middot; Nacht</p>
+            <div class="hero-date">Vrijdag 10 Juli</div>
+        </div>
+        <div class="hero-scroll">scroll</div>
+    </section>
+
+    <img class="img-full" src="https://images.unsplash.com/photo-1640883211847-b3c0fd9c4a75?w=1400&auto=format&fit=crop&q=80" alt="Oudegracht Utrecht">
+
+    <div class="container">
+        <section class="section reveal">
+            <p class="eyebrow">10 Juli 2026</p>
+            <h2 class="heading-xl">Een avond in Utrecht</h2>
+            <p class="body-text">
+                Diner bij Brasserie Goeie Louisa in Grand Hotel Karel V, 
+                daarna de stad in voor een drankje. Simpel plan, goede mensen.
+            </p>
+        </section>
+    </div>
+
+    <div class="container">
+        <section class="section-sm">
+            <p class="eyebrow">Het Programma</p>
+
+            <div class="event reveal">
+                <div class="event-header">
+                    <span class="event-time">19:00</span>
+                    <span class="event-tag">Ontvangst</span>
+                </div>
+                <h3 class="event-title">Bar &amp; Lounge &mdash; Karel V</h3>
+                <p class="event-subtitle">Grand Hotel Karel V &middot; Geertebolwerk 1, Utrecht</p>
+                <p class="event-body">
+                    We starten met een welkomstdrankje in de Bar &amp; Lounge. 
+                    Mooi moment om bij te praten voor het diner begint.
+                </p>
+                <div class="event-images single">
+                    <img src="https://images.unsplash.com/photo-1735056050385-37649d77df81?w=900&auto=format&fit=crop&q=80" alt="Grand Hotel Karel V Utrecht">
+                </div>
+                <div class="event-details">
+                    <span class="event-detail">&#128205; Geertebolwerk 1, Utrecht</span>
+                    <span class="event-detail">&#128337; Vanaf 19:00</span>
+                </div>
+                <a href="https://www.karelv.nl/eten-drinken/bar-lounge" class="event-link" target="_blank">Karel V &rarr;</a>
+            </div>
+
+            <div class="event reveal">
+                <div class="event-header">
+                    <span class="event-time">19:30</span>
+                    <span class="event-tag">Diner</span>
+                </div>
+                <h3 class="event-title">Brasserie Goeie Louisa</h3>
+                <p class="event-subtitle">Grand Hotel Karel V &middot; Open keuken &middot; Seizoensproducten</p>
+                <p class="event-body">
+                    Gevestigd in een voormalig klooster uit de 14e eeuw. Chef-kok Jules Borninkhof 
+                    kookt klassiek met een creatieve twist. Biologische producten uit de regio, 
+                    internationale wijnkaart per glas, casual classic sfeer.
+                </p>
+                <div class="event-images">
+                    <img src="https://images.unsplash.com/photo-1744233291331-60d717f651f0?w=600&auto=format&fit=crop&q=80" alt="Utrecht gracht avond">
+                    <img src="https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=600&auto=format&fit=crop&q=80" alt="Fine dining">
+                </div>
+                <div class="event-details">
+                    <span class="event-detail">&#127860; Chef Jules Borninkhof</span>
+                    <span class="event-detail">&#127863; Wijnkaart per glas</span>
+                    <span class="event-detail">&#128205; Geertebolwerk 1</span>
+                </div>
+                <a href="https://www.karelv.nl/eten-drinken/brasserie-goeie-louisa" class="event-link" target="_blank">Goeie Louisa &rarr;</a>
+            </div>
+
+            <div class="event reveal">
+                <div class="event-header">
+                    <span class="event-time">22:00</span>
+                    <span class="event-tag">Stappen</span>
+                </div>
+                <h3 class="event-title">De avond begint</h3>
+                <p class="event-subtitle">Utrecht centrum &middot; Oudegracht &amp; omgeving</p>
+                <p class="event-body">
+                    Na het diner lopen we het centrum in. Hieronder een paar suggesties 
+                    voor een drankje &mdash; we kijken ter plekke wat ons aanspreekt.
+                </p>
+            </div>
+
+            <div class="event reveal">
+                <div class="event-header">
+                    <span class="event-time">02:00</span>
+                    <span class="event-tag">Late night</span>
+                </div>
+                <h3 class="event-title">El Greco</h3>
+                <p class="event-subtitle">Late night snack</p>
+                <p class="event-body">
+                    De avond is pas af met een bezoek aan El Greco. Nachtelijk ritueel.
+                </p>
+            </div>
+
+        </section>
+    </div>
+
+    <div class="moodboard reveal">
+        <img src="https://images.unsplash.com/photo-1743151028424-81d5ee09fedf?w=500&auto=format&fit=crop&q=75" alt="Utrecht gracht reflectie">
+        <img src="https://images.unsplash.com/photo-1735056050385-37649d77df81?w=500&auto=format&fit=crop&q=75" alt="Domtoren nacht">
+        <img src="https://images.unsplash.com/photo-1640883211847-b3c0fd9c4a75?w=500&auto=format&fit=crop&q=75" alt="Oudegracht overdag">
+        <img src="https://images.unsplash.com/photo-1744233291331-60d717f651f0?w=500&auto=format&fit=crop&q=75" alt="Utrecht schemering">
+        <img src="https://images.unsplash.com/photo-1750930890065-f82f77193a3a?w=500&auto=format&fit=crop&q=75" alt="Dom tower nacht">
+        <img src="https://images.unsplash.com/photo-1547592180-85f173990554?w=500&auto=format&fit=crop&q=75" alt="Champagne">
+    </div>
+
+    <div class="container">
+        <section class="section reveal">
+            <p class="eyebrow">Na het diner</p>
+            <h2 class="heading-xl">Barretjes in Utrecht</h2>
+            <p class="body-text">
+                Een paar suggesties op loopafstand van Karel V. 
+                We hoeven niet te kiezen &mdash; we zien wel.
+            </p>
+
+            <div class="bar-grid">
+                <div class="bar-item">
+                    <div>
+                        <div class="bar-name">Caf&eacute; Olivier</div>
+                        <div class="bar-desc">Bierbar in een voormalige kerk. Belgisch bier, indrukwekkend interieur met originele gewelven en glas-in-lood.</div>
+                    </div>
+                    <div class="bar-meta">Oudegracht 47</div>
+                </div>
+                <div class="bar-item">
+                    <div>
+                        <div class="bar-name">Kaf&eacute; Belgi&euml;</div>
+                        <div class="bar-desc">Meer dan 200 bieren op de kaart. Kelders aan de Oudegracht, gezellige sfeer, open tot laat.</div>
+                    </div>
+                    <div class="bar-meta">Oudegracht 196</div>
+                </div>
+                <div class="bar-item">
+                    <div>
+                        <div class="bar-name">De Winkel van Sinkel</div>
+                        <div class="bar-desc">Grand caf&eacute; in het oudste warenhuis van Nederland. Monumentaal pand, cocktails, terras aan de gracht.</div>
+                    </div>
+                    <div class="bar-meta">Oudegracht 158</div>
+                </div>
+                <div class="bar-item">
+                    <div>
+                        <div class="bar-name">Oudaen</div>
+                        <div class="bar-desc">Stadskasteel uit 1320 met eigen brouwerij. Huisgebrouwen bier en een werfkelder direct aan het water.</div>
+                    </div>
+                    <div class="bar-meta">Oudegracht 99</div>
+                </div>
+                <div class="bar-item">
+                    <div>
+                        <div class="bar-name">RAAF Bar</div>
+                        <div class="bar-desc">Intieme cocktailbar. Creatieve cocktails, klein en gezellig, goede muziek.</div>
+                    </div>
+                    <div class="bar-meta">Twijnstraat 46</div>
+                </div>
+                <div class="bar-item">
+                    <div>
+                        <div class="bar-name">BUNK</div>
+                        <div class="bar-desc">Bar in een omgebouwde kerk aan de Neude. Open ruimte, relaxte sfeer, mooie plek voor een cocktail.</div>
+                    </div>
+                    <div class="bar-meta">Neude 5</div>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <img class="img-full" src="https://images.unsplash.com/photo-1743151028424-81d5ee09fedf?w=1400&auto=format&fit=crop&q=80" alt="Utrecht bij nacht">
+
+    <div class="container">
+        <section class="section reveal">
+            <p class="eyebrow">Checklist</p>
+            <h2 class="heading-lg">Wat je nodig hebt</h2>
+            <ul class="checklist">
+                <li>Outfit: casual chic</li>
+                <li>Comfortabele schoenen in je tas</li>
+                <li>Pinpas voor drankjes na het diner</li>
+                <li>Telefoon opgeladen</li>
+                <li>Jas of vestje voor tussendoor</li>
+                <li>ID-bewijs</li>
+            </ul>
+        </section>
+    </div>
+
+    <footer class="footer">
+        <p class="footer-title">Elke Keer Raak</p>
+        <p class="footer-sub">Utrecht Oost &middot; 10 Juli 2026 &middot; Goeie Louisa &middot; Karel V</p>
+    </footer>
+
+    <script>
+        const reveals = document.querySelectorAll('.reveal');
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) entry.target.classList.add('visible');
+            });
+        }, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
+        reveals.forEach(el => observer.observe(el));
+    </script>
+
+</body>
+</html>
