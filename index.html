@@ -17,9 +17,9 @@
             --accent:#a08a4c;
             --accent-dim:rgba(160,138,76,0.15);
             --cream:#f8f4ed;
-            --text:#c4bfb7;
-            --muted:#7a756e;
-            --dim:#3e3b37;
+            --text:#d6d1c9;
+            --muted:#908a82;
+            --dim:#4d4944;
             --line:rgba(160,138,76,0.06);
             --line-strong:rgba(160,138,76,0.12);
         }
@@ -33,6 +33,7 @@
             line-height:1.7;
             -webkit-font-smoothing:antialiased;
             font-weight:300;
+            font-size:15px;
         }
 
         ::-webkit-scrollbar{width:3px}
@@ -103,13 +104,13 @@
 
         /* LAYOUT */
         .wrap{max-width:720px;margin:0 auto;padding:0 2.5rem}
-        .spacer{height:10rem}
-        .spacer-sm{height:6rem}
+        .spacer{height:8rem}
+        .spacer-sm{height:5rem}
 
         @media(max-width:600px){
             .wrap{padding:0 1.6rem}
-            .spacer{height:7rem}
-            .spacer-sm{height:4rem}
+            .spacer{height:5.5rem}
+            .spacer-sm{height:3.5rem}
         }
 
         /* TYPOGRAPHY */
@@ -130,7 +131,7 @@
             color:var(--cream);margin-bottom:1.5rem;
         }
         .body{
-            font-size:0.85rem;line-height:2;color:var(--muted);
+            font-size:0.92rem;line-height:1.9;color:var(--muted);
             max-width:480px;font-weight:300;
         }
         .body-center{text-align:center;margin:0 auto}
@@ -156,7 +157,7 @@
             font-size:clamp(1.4rem,3vw,1.9rem);
             font-weight:400;color:var(--cream);margin-bottom:0.4rem;
         }
-        .prog-detail{font-size:0.75rem;color:var(--muted);font-weight:300;line-height:1.8}
+        .prog-detail{font-size:0.82rem;color:var(--muted);font-weight:300;line-height:1.8}
         .prog-link{
             display:inline-block;margin-top:1rem;
             font-size:0.55rem;letter-spacing:3px;text-transform:uppercase;
@@ -196,14 +197,14 @@
             font-family:'Cormorant Garamond',serif;
             font-size:1.05rem;font-weight:400;color:var(--cream);
         }
-        .bar-info{font-size:0.7rem;color:var(--muted);font-weight:300;margin-top:0.15rem}
+        .bar-info{font-size:0.78rem;color:var(--muted);font-weight:300;margin-top:0.15rem}
         .bar-loc{font-size:0.55rem;color:var(--dim);letter-spacing:2px;text-transform:uppercase}
 
         /* TODO */
         .todo{list-style:none;margin-top:2rem}
         .todo li{
             padding:1rem 0;border-bottom:1px solid var(--line);
-            font-size:0.82rem;color:var(--muted);font-weight:300;
+            font-size:0.88rem;color:var(--muted);font-weight:300;
             padding-left:1.5rem;position:relative;line-height:1.7;
         }
         .todo li::before{
@@ -273,31 +274,6 @@
                 Chef Jules Borninkhof &middot; Open keuken &middot; Seizoensproducten
             </p>
             <a href="https://www.karelv.nl/eten-drinken/brasserie-goeie-louisa" class="prog-link" target="_blank">Bekijk &rarr;</a>
-
-            <div class="wine">
-                <p class="wine-head">Uit de wijnkaart</p>
-                <div class="wine-row">
-                    <div>
-                        <div class="wine-name">Sancerre Blanc</div>
-                        <div class="wine-sub">Loire &middot; Fris, mineraal</div>
-                    </div>
-                    <div class="wine-price">&euro;9,50</div>
-                </div>
-                <div class="wine-row">
-                    <div>
-                        <div class="wine-name">Ch&acirc;teauneuf-du-Pape</div>
-                        <div class="wine-sub">Rh&ocirc;ne &middot; Krachtig, donker fruit</div>
-                    </div>
-                    <div class="wine-price">&euro;12,50</div>
-                </div>
-                <div class="wine-row">
-                    <div>
-                        <div class="wine-name">Prosecco Superiore DOCG</div>
-                        <div class="wine-sub">Valdobbiadene &middot; Bubbels</div>
-                    </div>
-                    <div class="wine-price">&euro;8,50</div>
-                </div>
-            </div>
         </div>
 
         <div class="prog-item reveal">
