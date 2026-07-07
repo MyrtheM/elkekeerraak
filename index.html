@@ -40,32 +40,47 @@
         ::-webkit-scrollbar-track{background:var(--bg)}
         ::-webkit-scrollbar-thumb{background:var(--accent);border-radius:1px}
 
-        /* TOPBAR */
-        .topbar{
-            position:fixed;top:0;left:0;right:0;z-index:100;
-            background:rgba(10,9,8,0.92);
-            backdrop-filter:blur(30px);-webkit-backdrop-filter:blur(30px);
-            padding:1rem 2rem;
-            display:flex;justify-content:center;align-items:center;gap:4rem;
+        /* FLOATING CARD */
+        .float-card{
+            position:fixed;bottom:1.5rem;right:1.5rem;z-index:100;
+            background:rgba(17,15,13,0.88);
+            backdrop-filter:blur(40px);-webkit-backdrop-filter:blur(40px);
+            border:1px solid var(--line-strong);
+            border-radius:16px;
+            padding:1.2rem 1.5rem;
+            min-width:200px;
+            display:flex;flex-direction:column;gap:1rem;
         }
-        .topbar-block{text-align:center}
-        .topbar-label{
-            font-size:0.5rem;letter-spacing:4px;text-transform:uppercase;
-            color:var(--dim);margin-bottom:0.3rem;
+        .float-section{display:flex;flex-direction:column;gap:0.25rem}
+        .float-label{
+            font-size:0.48rem;letter-spacing:3px;text-transform:uppercase;
+            color:var(--dim);font-weight:400;
         }
-        .topbar-val{
+        .float-countdown{
             font-family:'JetBrains Mono',monospace;
-            font-size:0.9rem;color:var(--accent);font-weight:300;
-            letter-spacing:1px;
-        }
-        .topbar-weather-val{
-            font-size:0.8rem;color:var(--text);font-weight:300;
+            font-size:0.95rem;color:var(--accent);font-weight:300;
             letter-spacing:0.5px;
         }
+        .float-weather-row{
+            display:flex;align-items:center;gap:0.6rem;
+        }
+        .float-weather-icon{font-size:1.4rem;line-height:1}
+        .float-weather-temp{
+            font-family:'Cormorant Garamond',serif;
+            font-size:1.6rem;font-weight:300;color:var(--cream);line-height:1;
+        }
+        .float-weather-detail{
+            font-size:0.65rem;color:var(--muted);font-weight:300;
+            margin-top:0.2rem;
+        }
+        .float-divider{
+            width:100%;height:1px;background:var(--line-strong);
+        }
         @media(max-width:600px){
-            .topbar{gap:2rem;padding:0.8rem 1.2rem}
-            .topbar-val{font-size:0.75rem}
-            .topbar-weather-val{font-size:0.7rem}
+            .float-card{bottom:1rem;right:1rem;padding:1rem 1.2rem;min-width:170px}
+            .float-countdown{font-size:0.8rem}
+            .float-weather-temp{font-size:1.3rem}
+            .float-weather-icon{font-size:1.2rem}
         }
 
         /* HERO */
@@ -246,14 +261,19 @@
 </head>
 <body>
 
-    <div class="topbar">
-        <div class="topbar-block">
-            <div class="topbar-label">Countdown</div>
-            <div class="topbar-val" id="countdown">-- dagen</div>
+    <div class="float-card">
+        <div class="float-section">
+            <div class="float-label">Nog</div>
+            <div class="float-countdown" id="countdown">--:--:--</div>
         </div>
-        <div class="topbar-block">
-            <div class="topbar-label">Weer 10 jul</div>
-            <div class="topbar-weather-val" id="weather">&mdash;</div>
+        <div class="float-divider"></div>
+        <div class="float-section">
+            <div class="float-label">Utrecht &middot; 10 jul</div>
+            <div class="float-weather-row">
+                <span class="float-weather-icon" id="w-icon">&mdash;</span>
+                <span class="float-weather-temp" id="w-temp">&mdash;</span>
+            </div>
+            <div class="float-weather-detail" id="w-detail"></div>
         </div>
     </div>
 
@@ -391,17 +411,35 @@
 
     <script>
         const D=new Date('2026-07-10T19:30:00+02:00');
-        !function t(){const d=D-new Date();if(d<=0){document.getElementById('countdown').textContent='Vanavond!';return}
-        const days=Math.floor(d/864e5),h=Math.floor(d%864e5/36e5),m=Math.floor(d%36e5/6e4);
-        document.getElementById('countdown').textContent=days+' dagen \u00b7 '+h+'u '+m+'m';setTimeout(t,6e4)}();
+        !function t(){const d=D-new Date();
+            if(d<=0){document.getElementById('countdown').textContent='Nu!';return}
+            const days=Math.floor(d/864e5);
+            const h=Math.floor(d%864e5/36e5);
+            const m=Math.floor(d%36e5/6e4);
+            const s=Math.floor(d%6e4/1e3);
+            const pad=n=>String(n).padStart(2,'0');
+            if(days>0){
+                document.getElementById('countdown').textContent=days+'d '+pad(h)+':'+pad(m)+':'+pad(s);
+            } else {
+                document.getElementById('countdown').textContent=pad(h)+':'+pad(m)+':'+pad(s);
+            }
+            requestAnimationFrame(t);
+        }();
 
         fetch('https://api.open-meteo.com/v1/forecast?latitude=52.09&longitude=5.12&hourly=temperature_2m,weathercode&timezone=Europe/Amsterdam&start_date=2026-07-10&end_date=2026-07-10')
         .then(r=>r.json()).then(d=>{
             const t=d.hourly.temperature_2m,c=d.hourly.weathercode;
             const e=Math.round(t[20]),n=Math.round(t[23]);
-            const i=c[20]<=1?'\u2600\ufe0f':c[20]<=3?'\u26c5':c[20]<=50?'\u2601\ufe0f':'\ud83c\udf27\ufe0f';
-            document.getElementById('weather').textContent=i+' '+e+'\xb0 avond \xb7 '+n+'\xb0 nacht \xb7 Utrecht';
-        }).catch(()=>{document.getElementById('weather').textContent='\u2600\ufe0f Utrecht'});
+            const code=c[20];
+            const icon=code<=1?'\u2600\ufe0f':code<=3?'\u26c5':code<=50?'\u2601\ufe0f':'\ud83c\udf27\ufe0f';
+            const desc=code<=1?'Helder':code<=3?'Half bewolkt':code<=50?'Bewolkt':'Regen';
+            document.getElementById('w-icon').textContent=icon;
+            document.getElementById('w-temp').textContent=e+'\xb0';
+            document.getElementById('w-detail').textContent=desc+' \xb7 '+n+'\xb0 nacht';
+        }).catch(()=>{
+            document.getElementById('w-icon').textContent='\u2600\ufe0f';
+            document.getElementById('w-temp').textContent='--\xb0';
+        });
 
         const o=new IntersectionObserver(e=>{e.forEach(x=>{if(x.isIntersecting)x.target.classList.add('visible')})},{threshold:0.06,rootMargin:'0px 0px -60px 0px'});
         document.querySelectorAll('.reveal').forEach(el=>o.observe(el));
