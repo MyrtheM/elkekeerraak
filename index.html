@@ -45,13 +45,28 @@
             position:fixed;top:0;left:0;right:0;z-index:100;
             background:rgba(10,9,8,0.92);
             backdrop-filter:blur(30px);-webkit-backdrop-filter:blur(30px);
-            padding:0.7rem 2rem;
-            display:flex;justify-content:center;align-items:center;gap:3rem;
-            font-size:0.55rem;letter-spacing:3px;text-transform:uppercase;
-            color:var(--dim);
+            padding:1rem 2rem;
+            display:flex;justify-content:center;align-items:center;gap:4rem;
         }
-        .topbar span.val{font-family:'JetBrains Mono',monospace;color:var(--accent);font-weight:300}
-        @media(max-width:600px){.topbar{gap:1.5rem;font-size:0.5rem}}
+        .topbar-block{text-align:center}
+        .topbar-label{
+            font-size:0.5rem;letter-spacing:4px;text-transform:uppercase;
+            color:var(--dim);margin-bottom:0.3rem;
+        }
+        .topbar-val{
+            font-family:'JetBrains Mono',monospace;
+            font-size:0.9rem;color:var(--accent);font-weight:300;
+            letter-spacing:1px;
+        }
+        .topbar-weather-val{
+            font-size:0.8rem;color:var(--text);font-weight:300;
+            letter-spacing:0.5px;
+        }
+        @media(max-width:600px){
+            .topbar{gap:2rem;padding:0.8rem 1.2rem}
+            .topbar-val{font-size:0.75rem}
+            .topbar-weather-val{font-size:0.7rem}
+        }
 
         /* HERO */
         .hero{
@@ -232,8 +247,14 @@
 <body>
 
     <div class="topbar">
-        <span>Nog <span class="val" id="countdown">--d --u</span></span>
-        <span id="weather">10 jul &middot; Utrecht</span>
+        <div class="topbar-block">
+            <div class="topbar-label">Countdown</div>
+            <div class="topbar-val" id="countdown">-- dagen</div>
+        </div>
+        <div class="topbar-block">
+            <div class="topbar-label">Weer 10 jul</div>
+            <div class="topbar-weather-val" id="weather">&mdash;</div>
+        </div>
     </div>
 
     <section class="hero">
@@ -370,17 +391,17 @@
 
     <script>
         const D=new Date('2026-07-10T19:30:00+02:00');
-        !function t(){const d=D-new Date();if(d<=0){document.getElementById('countdown').textContent='vanavond';return}
-        const days=Math.floor(d/864e5),h=Math.floor(d%864e5/36e5);
-        document.getElementById('countdown').textContent=days+'d '+h+'u';setTimeout(t,6e4)}();
+        !function t(){const d=D-new Date();if(d<=0){document.getElementById('countdown').textContent='Vanavond!';return}
+        const days=Math.floor(d/864e5),h=Math.floor(d%864e5/36e5),m=Math.floor(d%36e5/6e4);
+        document.getElementById('countdown').textContent=days+' dagen \u00b7 '+h+'u '+m+'m';setTimeout(t,6e4)}();
 
         fetch('https://api.open-meteo.com/v1/forecast?latitude=52.09&longitude=5.12&hourly=temperature_2m,weathercode&timezone=Europe/Amsterdam&start_date=2026-07-10&end_date=2026-07-10')
         .then(r=>r.json()).then(d=>{
             const t=d.hourly.temperature_2m,c=d.hourly.weathercode;
             const e=Math.round(t[20]),n=Math.round(t[23]);
             const i=c[20]<=1?'\u2600\ufe0f':c[20]<=3?'\u26c5':c[20]<=50?'\u2601\ufe0f':'\ud83c\udf27\ufe0f';
-            document.getElementById('weather').textContent=i+' '+e+'\xb0 avond \xb7 '+n+'\xb0 nacht';
-        }).catch(()=>{});
+            document.getElementById('weather').textContent=i+' '+e+'\xb0 avond \xb7 '+n+'\xb0 nacht \xb7 Utrecht';
+        }).catch(()=>{document.getElementById('weather').textContent='\u2600\ufe0f Utrecht'});
 
         const o=new IntersectionObserver(e=>{e.forEach(x=>{if(x.isIntersecting)x.target.classList.add('visible')})},{threshold:0.06,rootMargin:'0px 0px -60px 0px'});
         document.querySelectorAll('.reveal').forEach(el=>o.observe(el));
